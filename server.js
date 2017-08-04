@@ -1,6 +1,7 @@
 var express = require('express');
 var OAuth2 = require('./oauth2').OAuth2;
 var config = require('./config');
+var request = require('request');
 
 
 // Express configuration
@@ -50,13 +51,16 @@ app.get('/', function(req, res){
 
 // Handles requests from IDM with the access code
 app.get('/login', function(req, res){
-   
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     // Using the access code goes again to the IDM to obtain the access_token
     oa.getOAuthAccessToken(req.query.code, function (e, results){
 
         // Stores the access_token in a session cookie
+        console.log(e);
+        //console.log(results.acc);
         req.session.access_token = results.access_token;
-
+        console.log(JSON.stringify(results,4,4));
+        //id_token是jwtencode的payload，https://jwt.io/ 在线解析jwt
         res.redirect('/');
 
     });
@@ -70,14 +74,28 @@ app.get('/auth', function(req, res){
 
 // Ask IDM for user info
 app.get('/user_info', function(req, res){
-    var url = config.idmURL + '/user';
-
+    var url = config.idmURL + '/oauth2/userinfo';
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     // Using the access token asks the IDM for the user info
-    oa.get(url, req.session.access_token, function (e, response) {
-
-        var user = JSON.parse(response);
-        res.send("Welcome " + user.displayName + "<br> Your email address is " + user.email + "<br><br><button onclick='window.location.href=\"/logout\"'>Log out</button>");
+    console.log(req.session.access_token);
+    var params = {
+		headers: {'Authorization' : 'Bearer ' + req.session.access_token},
+		url: url,
+		};
+    console.log(params);
+    request.get(params, function(e, response, body){
+        if(e){
+            res.send(JSON.stringify(e));
+        }else{
+            res.send(JSON.stringify(body));
+        }
     });
+/*    oa.get(url, req.session.access_token, function (e, response) {
+        console.log(e);
+        console.log(response);
+ //       var user = JSON.parse(response);
+ //       res.send("Welcome " + user.displayName + "<br> Your email address is " + user.email + "<br><br><button onclick='window.location.href=\"/logout\"'>Log out</button>");
+    });*/
 });
 
 // Handles logout requests to remove access_token from the session cookie
