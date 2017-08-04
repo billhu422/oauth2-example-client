@@ -11,4 +11,4 @@ RUN git clone https://github.com/billhu422/oauth2-example-client.git && \
 
 expose 9000
 
-CMD  node /oauth2-example-client/server.js
+CMD  node /opt/oauth2-example-client/server.js
