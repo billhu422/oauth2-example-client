@@ -1,5 +1,5 @@
 var config = {}
-
+config.port = 9000;
 config.idmURL = '';
 config.client_id = '';
 config.client_secret = '';

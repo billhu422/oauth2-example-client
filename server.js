@@ -105,5 +105,5 @@ app.get('/logout', function(req, res){
     res.redirect('/');
 });
 
-console.log('Server listen in port 80. Connect to localhost');
-app.listen(80);
+console.log('Server listen in port '+ config.port );
+app.listen(config.port);
