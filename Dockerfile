@@ -1,7 +1,7 @@
 FROM node:latest
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
-RUN apt-get update && apt-get -y install curl && apt-get -y install git && apt-get -y intall vim
+RUN apt-get update && apt-get -y install curl && apt-get -y install git && apt-get -y install vim
 WORKDIR /opt
 
 RUN git clone https://github.com/billhu422/oauth2-example-client.git && \
