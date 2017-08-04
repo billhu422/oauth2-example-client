@@ -87,7 +87,7 @@ app.get('/user_info', function(req, res){
         if(e){
             res.send(JSON.stringify(e));
         }else{
-            res.send(JSON.stringify(body));
+            res.send(JSON.stringify(JSON.parse(body),4,4));
         }
     });
 /*    oa.get(url, req.session.access_token, function (e, response) {
